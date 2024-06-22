@@ -1,6 +1,6 @@
 package com.jewelbankers.controller;
 
-import com.jewelbankers.model.Customer;
+import com.jewelbankers.entity.Customer;
 import com.jewelbankers.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,38 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return customerService.findAll();
     }
+    
+    @PostMapping
+    @ResponseBody
+    public Customer saveCustomer(@RequestBody Customer customer) {
+        return customerService.saveCustomer(customer);
+    }
+    
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public String deleteCustomer(@PathVariable("id") Long id) {
+        return customerService.deleteCustomer(id);
+        //return "Sucessfully deleted for Customer Id "+id;
+        
+    }
+    
+    @PutMapping("/{id}")
+    @ResponseBody
+    public Customer updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
+        return customerService.updateCustomer(id, customer);
+    }
+    
+    @GetMapping("/search")
+    @ResponseBody
+    public List<Customer> searchCustomersByName(@RequestParam("customerName") String customerName) {
+        return customerService.findCustomersByName(customerName);
+    }
+
 //(@PathVariable("id") Long id)
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
-        Optional<Customer> customer = customerService.findById(id);
-        return customer.map(ResponseEntity::ok)
-                       .orElseGet(() -> ResponseEntity.notFound().build());
+    public Optional<Customer> getCustomerById(@PathVariable("id") Long id) {
+        return customerService.findById(id);
+        /*return customer.map(ResponseEntity::ok)
+                       .orElseGet(() -> ResponseEntity.notFound().build());*/
     }
 }
